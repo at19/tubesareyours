@@ -1,0 +1,7 @@
+{
+  "env": {
+    "MONGO_USER": "angeshtuto",
+    "MONGO_PASSWORD": "S3klnfvb7UiC6WIM",
+    "MONGO_DB": "tubesareyours"
+  }
+}
