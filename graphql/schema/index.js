@@ -33,8 +33,8 @@ input UserInput {
   password: String!
 }
 type RootQuery {
-    videos: [Video!]!
-    users: [User!]!
+    videos(first: Int, offset: Int): [Video!]!
+    users(first: Int, offset: Int): [User!]!
     login(email: String!, password: String!): AuthData!
 }
 type RootMutation {

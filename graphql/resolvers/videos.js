@@ -4,9 +4,13 @@ const User = require("../../models/user");
 const { transformVideo } = require("./merge");
 
 module.exports = {
-  videos: async () => {
+  videos: async ({ first, offset = 0 }) => {
     try {
-      const videos = await Video.find();
+      const videoData = await Video.find();
+      const videos =
+        first === undefined
+          ? videoData.slice(offset)
+          : videoData.slice(offset, offset + first);
       return videos.map(video => transformVideo(video));
     } catch (err) {
       throw err;

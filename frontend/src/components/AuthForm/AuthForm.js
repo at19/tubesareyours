@@ -23,7 +23,7 @@ const Form = ({
       </FormInputGroup>
       <FormInputGroup className="form-action">
         <button type="button" onClick={onSwitchMode}>{isLogin ? "Create an account" : "Login with email and password"}</button>
-        <button type="submit">Sign In</button>
+        <button type="submit">{isLogin ? "Sign in" : "Create an account"}</button>
       </FormInputGroup>
     </form>
   )

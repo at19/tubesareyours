@@ -7,6 +7,7 @@ import Auth from './pages/Auth/Auth';
 
 import AuthContext from './contexts/auth-context';
 import Videos from './pages/Videos/Videos';
+import Users from './pages/Users/Users';
 
 function App() {
   const [userId, setUserId] = useState(null);
@@ -34,6 +35,7 @@ function App() {
                 {token && <Redirect from="/login" to="/videos" exact />}
                 {!token && <Route path="/login" component={Auth} />}
                 <Route path="/videos" component={Videos} />
+                <Route path="/users" component={Users} />
               </Switch>
             </main>
           </AuthContext.Provider>

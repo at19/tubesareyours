@@ -16,6 +16,7 @@ function Auth() {
 
     const email = emailElement.current.value;
     const password = passwordElement.current.value;
+    passwordElement.current.value = "";
     const name = !isLogin ? nameElement.current.value : null;
 
     const requestBody = isLogin ? ({

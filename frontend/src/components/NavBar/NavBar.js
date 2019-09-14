@@ -1,7 +1,7 @@
-import React, {useContext} from 'react'
+import React, { useContext } from 'react'
 import './NavBar.css'
 
-import  {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import AuthContext from '../../contexts/auth-context';
 
 const NavBar = () => {
@@ -14,6 +14,8 @@ const NavBar = () => {
       </div>
       <nav className="navbar__items">
         <ul>
+          <li><NavLink to="/users">Users</NavLink></li>
+          <li><NavLink to="/videos">Videos</NavLink></li>
           {authContext.token ? (<li><button onClick={authContext.logout}>Logout</button></li>) : (<li><NavLink to="/login">Login</NavLink></li>)}
         </ul>
       </nav>

@@ -4,15 +4,17 @@ const jwt = require("jsonwebtoken");
 const User = require("../../models/user");
 const { transformUser } = require("./merge");
 
-
 module.exports = {
-  users: async () => {
+  users: async ({ first, offset = 0 }) => {
     try {
-      const users = await User.find();
+      const userData = await User.find();
+
+      const users =
+        first === undefined
+          ? userData.slice(offset)
+          : userData.slice(offset, offset + first);
+
       return users.map(user => transformUser(user));
-      // return videos.map(video => {
-      //   return transformVideo(video);
-      // });
     } catch (err) {
       throw err;
     }
