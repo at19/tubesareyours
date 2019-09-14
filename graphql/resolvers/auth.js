@@ -2,10 +2,23 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../../models/user");
+const { transformUser } = require("./merge");
+
 
 module.exports = {
+  users: async () => {
+    try {
+      const users = await User.find();
+      return users.map(user => transformUser(user));
+      // return videos.map(video => {
+      //   return transformVideo(video);
+      // });
+    } catch (err) {
+      throw err;
+    }
+  },
   createUser: async args => {
-    const { name, user, password } = args.userInput;
+    const { name, email, password } = args.userInput;
     try {
       const existingUser = await User.findOne({ email });
       if (existingUser) {

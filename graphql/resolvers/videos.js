@@ -7,9 +7,7 @@ module.exports = {
   videos: async () => {
     try {
       const videos = await Video.find();
-      return videos.map(video => {
-        return transformVideo(video);
-      });
+      return videos.map(video => transformVideo(video));
     } catch (err) {
       throw err;
     }
@@ -21,7 +19,7 @@ module.exports = {
 
     const video = new Video({
       url: args.videoInput.url,
-      date: new Date(args.videoInput.date),
+      date: new Date(),
       creator: req.userId
     });
     let createdVideo;

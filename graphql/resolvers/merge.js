@@ -1,6 +1,16 @@
+const DataLoader = require("dataloader");
+
 const Video = require("../../models/video");
 const User = require("../../models/user");
 const { dateToString } = require("../../helpers/date");
+
+const videoLoader = new DataLoader(videoIds => {
+  return videos(videoIds);
+});
+
+const userLoader = new DataLoader(userIds => {
+  return User.find({ _id: { $in: userIds } });
+});
 
 const videos = async videoIds => {
   try {
@@ -15,7 +25,7 @@ const videos = async videoIds => {
 
 const singleVideo = async videoId => {
   try {
-    const video = await Video.findById(videoId);
+    const video = await videoLoader.load(videoId.toString());
     return transformVideo(video);
   } catch (err) {
     throw err;
@@ -24,12 +34,8 @@ const singleVideo = async videoId => {
 
 const user = async userId => {
   try {
-    const user = await User.findById(userId);
-    return {
-      ...user._doc,
-      _id: user.id,
-      createdVideos: videos.bind(this, user._doc.createdVideos)
-    };
+    const user = await userLoader.load(userId.toString());
+    return transformUser(user);
   } catch (err) {
     throw err;
   }
@@ -44,4 +50,13 @@ const transformVideo = video => {
   };
 };
 
+const transformUser = user => {
+  return {
+    ...user._doc,
+    _id: user.id,
+    createdVideos: () => videoLoader.loadMany(user._doc.createdVideos)
+  };
+};
+
 exports.transformVideo = transformVideo;
+exports.transformUser = transformUser;

@@ -25,8 +25,8 @@ type AuthData {
 
 input VideoInput {
   url: String!
-  date: String!
 }
+
 input UserInput {
   name: String!
   email: String!
@@ -34,6 +34,7 @@ input UserInput {
 }
 type RootQuery {
     videos: [Video!]!
+    users: [User!]!
     login(email: String!, password: String!): AuthData!
 }
 type RootMutation {
