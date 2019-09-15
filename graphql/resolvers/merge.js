@@ -23,15 +23,6 @@ const videos = async videoIds => {
   }
 };
 
-const singleVideo = async videoId => {
-  try {
-    const video = await videoLoader.load(videoId.toString());
-    return transformVideo(video);
-  } catch (err) {
-    throw err;
-  }
-};
-
 const user = async userId => {
   try {
     const user = await userLoader.load(userId.toString());

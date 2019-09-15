@@ -49,7 +49,7 @@ function Auth() {
     }).then(res => {
       if (res.status !== 200 && res.status !== 201) {
         console.log(res);
-        throw new Error("Failed");
+        throw new Error("FailedBLA");
       }
       return res.json();
     }).then(resData => {
@@ -66,8 +66,7 @@ function Auth() {
     })
   }
 
-  const onSwitchModeClick = event => {
-    event.preventDefault();
+  const onSwitchModeClick = () => {
     setIsLogin(!isLogin);
   }
 
@@ -78,7 +77,7 @@ function Auth() {
       passwordRef={passwordElement}
       nameRef={nameElement}
       onSubmit={onSubmitClick}
-      onSwitchMode={onSwitchModeClick} />
+      switchMode={onSwitchModeClick} />
   )
 }
 

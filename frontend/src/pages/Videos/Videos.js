@@ -1,13 +1,15 @@
 import React, { useState, useRef, useContext, useEffect, useCallback } from 'react'
 import './Videos.css';
+import { Link } from 'react-router-dom';
+
 import VideoModal from '../../components/VideoModal/VideoModal';
 import Backdrop from '../../components/Backdrop/Backdrop';
-import FormInputGroup from '../../components/FormInputGroup/FormInputGroup';
-import FormInputItem from '../../components/FormInputItem/FormInputItem';
 import AuthContext from '../../contexts/auth-context';
 
 import pRetry from 'p-retry';
 import fetch from 'node-fetch';
+import randomColor from 'randomcolor';
+import daysjs from 'dayjs';
 
 const ENTRIES_PER_PAGE = 25;
 
@@ -16,6 +18,7 @@ function Videos() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
+  const [reachedMaxPageNumber, setReachedMaxPageNumber] = useState(false);
   const urlElement = useRef(null);
   const authContext = useContext(AuthContext);
 
@@ -23,7 +26,7 @@ function Videos() {
     const requestBody = {
       query: `
         query {
-          videos(first: ${ENTRIES_PER_PAGE}, offset: ${ENTRIES_PER_PAGE * pageNumber}) {
+          videos(first: ${ENTRIES_PER_PAGE + 1}, offset: ${ENTRIES_PER_PAGE * pageNumber}) {
             url
             date
             creator {
@@ -41,12 +44,12 @@ function Videos() {
         "Content-Type": "application/json",
       }
     });
- 
+
     // Abort retrying if the resource doesn't exist
     if (response.status === 404) {
-        throw new pRetry.AbortError(response.statusText);
+      throw new pRetry.AbortError(response.statusText);
     }
- 
+
     return response.json();
   }, [pageNumber]);
 
@@ -55,7 +58,12 @@ function Videos() {
 
     const resData = await pRetry(runFetchVideos);
 
-    const videos = resData.data.videos;
+    const videos = resData.data.videos.slice(0, -1);
+
+    if (videos.length <= ENTRIES_PER_PAGE) {
+      setReachedMaxPageNumber(true);
+    }
+
     videos.sort((a, b) => (
       Date.parse(b.date) - Date.parse(a.date)
     ));
@@ -97,7 +105,7 @@ function Videos() {
       }
 
       const token = authContext.token;
-  
+
       const response = await fetch('http://localhost:8000/graphql', {
         method: "POST",
         body: JSON.stringify(requestBody),
@@ -106,12 +114,12 @@ function Videos() {
           "Authorization": `Bearer ${token}`
         }
       });
-   
+
       // Abort retrying if the resource doesn't exist
       if (response.status === 404) {
-          throw new pRetry.AbortError(response.statusText);
+        throw new pRetry.AbortError(response.statusText);
       }
-   
+
       return response.json();
     }
 
@@ -124,34 +132,53 @@ function Videos() {
     <div className="Videos">
       {creating && (
         <>
-          <Backdrop />
+          <Backdrop onBackdropClick={onCancelClick} />
           <VideoModal
             title="Add Video" canCancel canConfirm
             onCancel={onCancelClick}
             onConfirm={onConfirmClick}
           >
-            <form>
-              <FormInputGroup className="form-control">
+            <form className="new-video-form">
+              {/* <FormInputGroup className="form-control">
                 <FormInputItem itemId="url" itemType="text" itemLabel="URL" itemRef={urlElement} />
-              </FormInputGroup>
+              </FormInputGroup> */}
+              <input type="text" placeholder="Enter the URL" ref={urlElement} />
             </form>
           </VideoModal>
         </>
       )}
-      {authContext.token && <div className="videos-control">
-        <p>Share your videos</p>
-        <button className="btn" onClick={onStartCreateVideoClick}>Share Video</button>
+      {authContext.token && <div className="Videos__control">
+        <h2>Share your videos</h2>
+        <button className="btn" onClick={onStartCreateVideoClick}>Add Video</button>
       </div>}
-      {!loading ?
-        (videos.map(({url, date, creator}, index) => (
-          <div key={index}>
-          <div>{url}</div>
-          <div>{date}</div>
-          <div>{`By ${creator.name}`}</div></div>
-        ))) : `LOADING`
+      {!loading ? (
+        <section className="cards">
+          {videos.map(({ url, date, creator }, index) => {
+            const color = randomColor();
+            return (
+              <article key={index} className="card card--video">
+                <div className="card__img" style={{ backgroundColor: color }}></div>
+                <a href={url} className="card_link">
+                  <div className="card__img--hover" style={{ backgroundColor: color }}></div>
+                </a>
+                <div className="card__info">
+                  <h3 className="card__title"><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></h3>
+                  <span className="card__date">{daysjs(date).format("MMM DD YYYY")}</span>
+                  <span className="card__by">by <Link to="/users" className="card__author" title="author">{creator.name}</Link></span>
+                </div>
+              </article>
+            )
+          })}
+        </section>
+      )
+        : (<div className="Videos__loading">
+          <span className="spinner"></span>
+        </div>)
       }
-          <button disabled={videos.length < 25} onClick={() => setPageNumber(pageNumber + 1)}>NEXT</button>
-    <button disabled={pageNumber === 0} onClick={() => setPageNumber(pageNumber - 1)}>PREVIOUS</button>
+      <div className="pagination">
+        <button disabled={pageNumber === 0} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
+        <button disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button>
+      </div>
     </div>
   )
 }

@@ -9,8 +9,8 @@ const VideoModal = ({title, children, canCancel, canConfirm, onCancel, onConfirm
         {children}
       </div>
       <div className="video-modal__actions">
-        {canCancel && <button className="btn" onClick={onCancel}>Cancel</button>}
-        {canConfirm && <button className="btn btn-danger" onClick={onConfirm}>Confirm</button>}
+        {canCancel && <button className="btn danger" onClick={onCancel}>Cancel</button>}
+        {canConfirm && <button className="btn" onClick={onConfirm}>Confirm</button>}
       </div>
       
     </div>

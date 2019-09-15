@@ -8,14 +8,19 @@
 
 :root {
   font-size: 10px;
+
+  --color-primary: rgba(237, 37, 78, 1);
+  --color-accent: hsl(49, 93%, 55%); /* lighting default: 67% */
+  --color-light: rgba(244, 255, 253, 1);
+  --color-dark: rgba(1, 25, 54, 1);
+  --color-gray: rgba(70, 83, 98, 1);
+  --color-box-shadow: rgba(32, 33, 36, 0.28);
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 
   box-sizing: border-box;
 }

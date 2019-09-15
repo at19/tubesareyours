@@ -1,7 +1,10 @@
 .App {
   text-align: center;
+  background-color: var(--color-light);
+  color: var(--color-light);
 }
 
 .App__main {
   margin: 4rem 2.5rem 0;
+  height: calc(100vh - 5rem);
 }

@@ -1,7 +1,5 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import './AuthForm.css';
-import FormInputGroup from '../FormInputGroup/FormInputGroup';
-import FormInputItem from '../FormInputItem/FormInputItem';
 
 const Form = ({
   isLogin,
@@ -9,23 +7,60 @@ const Form = ({
   passwordRef,
   nameRef,
   onSubmit,
-  onSwitchMode }) => {
+  switchMode }) => {
+
+  const containerRef = useRef(null);
+
+  const switchToSignInClicked = () => {
+    containerRef.current.classList.remove("right-panel-active");
+    switchMode();
+  }
+
+  const switchToSignUpClicked = () => {
+    containerRef.current.classList.add("right-panel-active");
+    switchMode();
+  }
+
   return (
-    <form className="form" onSubmit={onSubmit}>
-      {!isLogin ? (<FormInputGroup className="form-control">
-        <FormInputItem itemId="name" itemType="text" itemLabel="Name" itemRef={nameRef} />
-      </FormInputGroup>) : null}
-      <FormInputGroup className="form-control">
-        <FormInputItem itemId="email" itemType="email" itemLabel="Email" itemRef={emailRef} />
-      </FormInputGroup>
-      <FormInputGroup className="form-control">
-        <FormInputItem itemId="password" itemType="password" itemLabel="Password" itemRef={passwordRef} />
-      </FormInputGroup>
-      <FormInputGroup className="form-action">
-        <button type="button" onClick={onSwitchMode}>{isLogin ? "Create an account" : "Login with email and password"}</button>
-        <button type="submit">{isLogin ? "Sign in" : "Create an account"}</button>
-      </FormInputGroup>
-    </form>
+    <>
+      <div className="authForm" ref={containerRef}>
+        <div className="form-container sign-up-container">
+          <form action="#">
+            <h1>Create Account</h1>
+            <input type="text" placeholder="Name" ref={!isLogin ? nameRef : null} />
+            <input type="email" placeholder="Email" ref={!isLogin ? emailRef : null} />
+            <input type="password" placeholder="Password" ref={!isLogin ? passwordRef : null} />
+            <button onClick={onSubmit}>Sign Up</button>
+          </form>
+        </div>
+
+        <div className="form-container sign-in-container">
+          <form action="#">
+            <h1>Sign in</h1>
+            <input type="email" placeholder="Email" ref={isLogin ? emailRef : null} />
+            <input type="password" placeholder="Password" ref={isLogin ? passwordRef : null} />
+            <a href="/">Forgot your password?</a>
+            <button onClick={onSubmit}>Sign In</button>
+          </form>
+        </div>
+
+        <div className="overlay-container">
+          <div className="overlay">
+            <div className="overlay-panel overlay-left">
+              <h1>Welcome Back!</h1>
+              <p>To keep connected with us please login with your personal info</p>
+              <button className="ghost" id="signIn" onClick={switchToSignInClicked}>Sign In</button>
+            </div>
+            <div className="overlay-panel overlay-right">
+              <h1>Hello, Friend!</h1>
+              <p>Enter your personal details and start journey with us</p>
+              <button className="ghost" id="signUp" onClick={switchToSignUpClicked}>Sign Up</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </>
   )
 }
 

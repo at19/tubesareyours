@@ -11,12 +11,13 @@ function Users() {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [reachedMaxPageNumber, setReachedMaxPageNumber] = useState(false);
 
   const runFetchUsers = useCallback(async () => {
     const requestBody = {
       query: `
         query {
-          users(first: ${ENTRIES_PER_PAGE}, offset: ${ENTRIES_PER_PAGE * pageNumber}) {
+          users(first: ${ENTRIES_PER_PAGE + 1}, offset: ${ENTRIES_PER_PAGE * pageNumber}) {
             name
             email
             createdVideos {
@@ -47,7 +48,11 @@ function Users() {
     setLoading(true);
     const resData = await pRetry(runFetchUsers);
 
-    const users = resData.data.users.map(user => ({...user, videoCount: user.createdVideos.length}));
+    const users = resData.data.users.map(user => ({...user, videoCount: user.createdVideos.length})).slice(0, -1);
+
+    if (users.length <= ENTRIES_PER_PAGE) {
+      setReachedMaxPageNumber(true);
+    }
 
     setUsers(users);
     setLoading(false);
@@ -67,7 +72,7 @@ function Users() {
         <div>{`Video count: ${videoCount}`}</div></div>
       ))) : `LOADING`
     }</List>
-    <button disabled={users.length < 25} onClick={() => setPageNumber(pageNumber + 1)}>NEXT</button>
+    <button disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>NEXT</button>
     <button disabled={pageNumber === 0} onClick={() => setPageNumber(pageNumber - 1)}>PREVIOUS</button>
     </>
   )
