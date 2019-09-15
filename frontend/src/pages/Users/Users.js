@@ -1,9 +1,10 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Users.css';
 import List from '../../components/List/List';
 
 import pRetry from 'p-retry';
 import fetch from 'node-fetch';
+import randomColor from 'randomcolor';
 
 const ENTRIES_PER_PAGE = 25;
 
@@ -35,12 +36,12 @@ function Users() {
         "Content-Type": "application/json",
       }
     });
- 
+
     // Abort retrying if the resource doesn't exist
     if (response.status === 404) {
-        throw new pRetry.AbortError(response.statusText);
+      throw new pRetry.AbortError(response.statusText);
     }
- 
+
     return response.json();
   }, [pageNumber]);
 
@@ -48,7 +49,7 @@ function Users() {
     setLoading(true);
     const resData = await pRetry(runFetchUsers);
 
-    const users = resData.data.users.map(user => ({...user, videoCount: user.createdVideos.length})).slice(0, -1);
+    const users = resData.data.users.map(user => ({ ...user, videoCount: user.createdVideos.length })).slice(0, -1);
 
     if (users.length <= ENTRIES_PER_PAGE) {
       setReachedMaxPageNumber(true);
@@ -63,18 +64,32 @@ function Users() {
   }, [fetchUsers])
 
   return (
-    <>
-    <List>{!loading ?
-      (users.map(({name, email, videoCount}, index) => (
-        <div key={index}>
-        <div>{name}</div>
-        <div>{email}</div>
-        <div>{`Video count: ${videoCount}`}</div></div>
-      ))) : `LOADING`
+    <List>{!loading ? (
+      <>
+        <section className="cards">
+          {users.map(({ name, email, videoCount }, index) => {
+            const color = randomColor();
+            return (
+              <article key={index} className="card">
+                <div className="card__img" style={{ backgroundColor: color }}></div>
+                <div className="card_link">
+                  <div className="card__img--hover" style={{ backgroundColor: color }}></div>
+                </div>
+                <div className="card__info">
+                  <h3 className="card__title">{name}</h3>
+                  <span className="card__author">Videos uploaded: {videoCount}</span>
+                </div>
+              </article>
+            )
+          })}
+        </section>
+        <button className="pagination" disabled={(pageNumber === 0)} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
+        <button className="pagination" disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button>
+      </>
+    ) : (<div className="spinner">
+      <span className="spinner__container"></span>
+    </div>)
     }</List>
-    <button disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>NEXT</button>
-    <button disabled={pageNumber === 0} onClick={() => setPageNumber(pageNumber - 1)}>PREVIOUS</button>
-    </>
   )
 }
 

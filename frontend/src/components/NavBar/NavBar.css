@@ -10,6 +10,8 @@
   box-shadow: 0 0.1rem 0.6rem 0 var(--color-box-shadow);
   justify-content: space-between;
   background-color: var(--color-light);
+
+  z-index: 100;
 }
 
 .navbar__logo h1 {

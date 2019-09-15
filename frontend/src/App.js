@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
+import './components/Cards.css';
+import './components/Loading.css';
 
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import NavBar from './components/NavBar/NavBar';

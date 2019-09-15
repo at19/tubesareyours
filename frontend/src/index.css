@@ -23,6 +23,7 @@ body {
     sans-serif;
 
   box-sizing: border-box;
+  background-color: var(--color-light);
 }
 
 code {

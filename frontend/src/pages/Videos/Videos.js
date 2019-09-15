@@ -58,10 +58,12 @@ function Videos() {
 
     const resData = await pRetry(runFetchVideos);
 
-    const videos = resData.data.videos.slice(0, -1);
+    const videos = resData.data.videos;
 
     if (videos.length <= ENTRIES_PER_PAGE) {
       setReachedMaxPageNumber(true);
+    } else {
+      videos.splice(-1, 1);
     }
 
     videos.sort((a, b) => (
@@ -152,33 +154,33 @@ function Videos() {
         <button className="btn" onClick={onStartCreateVideoClick}>Add Video</button>
       </div>}
       {!loading ? (
-        <section className="cards">
-          {videos.map(({ url, date, creator }, index) => {
-            const color = randomColor();
-            return (
-              <article key={index} className="card card--video">
-                <div className="card__img" style={{ backgroundColor: color }}></div>
-                <a href={url} className="card_link">
-                  <div className="card__img--hover" style={{ backgroundColor: color }}></div>
-                </a>
-                <div className="card__info">
-                  <h3 className="card__title"><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></h3>
-                  <span className="card__date">{daysjs(date).format("MMM DD YYYY")}</span>
-                  <span className="card__by">by <Link to="/users" className="card__author" title="author">{creator.name}</Link></span>
-                </div>
-              </article>
-            )
-          })}
-        </section>
+        <>
+          <section className="cards">
+            {videos.map(({ url, date, creator }, index) => {
+              const color = randomColor();
+              return (
+                <article key={index} className="card">
+                  <div className="card__img" style={{ backgroundColor: color }}></div>
+                  <a href={url} className="card_link">
+                    <div className="card__img--hover" style={{ backgroundColor: color }}></div>
+                  </a>
+                  <div className="card__info">
+                    <h3 className="card__title"><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></h3>
+                    <span className="card__date">{daysjs(date).format("MMM DD YYYY")}</span>
+                    <span className="card__by">by <Link to="/users" className="card__author" title="author">{creator.name}</Link></span>
+                  </div>
+                </article>
+              )
+            })}
+          </section>
+            <button className="pagination" disabled={(pageNumber === 0)} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
+            <button className="pagination" disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button>
+        </>
       )
-        : (<div className="Videos__loading">
-          <span className="spinner"></span>
+        : (<div className="spinner">
+          <span className="spinner__container"></span>
         </div>)
       }
-      <div className="pagination">
-        <button disabled={pageNumber === 0} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
-        <button disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button>
-      </div>
     </div>
   )
 }
