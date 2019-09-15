@@ -141,9 +141,6 @@ function Videos() {
             onConfirm={onConfirmClick}
           >
             <form className="new-video-form">
-              {/* <FormInputGroup className="form-control">
-                <FormInputItem itemId="url" itemType="text" itemLabel="URL" itemRef={urlElement} />
-              </FormInputGroup> */}
               <input type="text" placeholder="Enter the URL" ref={urlElement} />
             </form>
           </VideoModal>

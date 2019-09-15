@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Users.css';
-import List from '../../components/List/List';
 
 import pRetry from 'p-retry';
 import fetch from 'node-fetch';
@@ -64,7 +63,7 @@ function Users() {
   }, [fetchUsers])
 
   return (
-    <List>{!loading ? (
+    <div className="Users">{!loading ? (
       <>
         <section className="cards">
           {users.map(({ name, email, videoCount }, index) => {
@@ -89,7 +88,7 @@ function Users() {
     ) : (<div className="spinner">
       <span className="spinner__container"></span>
     </div>)
-    }</List>
+    }</div>
   )
 }
 
