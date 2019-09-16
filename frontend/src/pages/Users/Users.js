@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Users.css';
 
+import Pagination, {ENTRIES_PER_PAGE} from '../../components/Pagination/Pagination';
+
 import pRetry from 'p-retry';
 import fetch from 'node-fetch';
 import randomColor from 'randomcolor';
-
-const ENTRIES_PER_PAGE = 25;
 
 function Users() {
   const [loading, setLoading] = useState(false);
@@ -82,8 +82,14 @@ function Users() {
             )
           })}
         </section>
-        <button className="pagination" disabled={(pageNumber === 0)} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
-        <button className="pagination" disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button>
+        {/* <button className="pagination" disabled={(pageNumber === 0)} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
+        <button className="pagination" disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button> */}
+        <Pagination 
+          className="pagination" 
+          nextDisabled={!(!loading && !reachedMaxPageNumber)} 
+          onNextClick={() => setPageNumber(pageNumber + 1)} 
+          prevDisabled={(pageNumber === 0)} 
+          onPrevClick={() => setPageNumber(pageNumber - 1)} />
       </>
     ) : (<div className="spinner">
       <span className="spinner__container"></span>

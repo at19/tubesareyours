@@ -4,14 +4,13 @@ import { Link } from 'react-router-dom';
 
 import VideoModal from '../../components/VideoModal/VideoModal';
 import Backdrop from '../../components/Backdrop/Backdrop';
+import Pagination, {ENTRIES_PER_PAGE} from '../../components/Pagination/Pagination';
 import AuthContext from '../../contexts/auth-context';
 
 import pRetry from 'p-retry';
 import fetch from 'node-fetch';
 import randomColor from 'randomcolor';
 import daysjs from 'dayjs';
-
-const ENTRIES_PER_PAGE = 25;
 
 function Videos() {
   const [creating, setCreating] = useState(false);
@@ -170,8 +169,14 @@ function Videos() {
               )
             })}
           </section>
-            <button className="pagination" disabled={(pageNumber === 0)} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
-            <button className="pagination" disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button>
+          {/* <button className="pagination" disabled={(pageNumber === 0)} onClick={() => setPageNumber(pageNumber - 1)}>&larr; Prev</button>
+            <button className="pagination" disabled={!(!loading && !reachedMaxPageNumber)} onClick={() => setPageNumber(pageNumber + 1)}>Next &rarr;</button> */}
+          <Pagination 
+            className="pagination" 
+            nextDisabled={!(!loading && !reachedMaxPageNumber)} 
+            onNextClick={() => setPageNumber(pageNumber + 1)} 
+            prevDisabled={(pageNumber === 0)} 
+            onPrevClick={() => setPageNumber(pageNumber - 1)} />
         </>
       )
         : (<div className="spinner">
